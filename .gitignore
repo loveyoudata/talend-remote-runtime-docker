@@ -1,8 +1,15 @@
 # Do not distribute Talend Remote Engine archives
 remote-engine/*.tar.gz
+*.tar.gz
+*.zip
 
 # Keep secrets secret
 .env
 
-# Everything else
-.DS_store
+# Ignore software patches and temporary files
+software/
+.DS_Store
+
+# Ignore local config directories to prevent committing credentials
+remote-engine/etc/
+runtime-engine/etc/

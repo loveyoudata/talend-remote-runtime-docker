@@ -5,6 +5,15 @@
 
 set -e
 
+# Initialize empty mounted directories with default configs
+if [ ! -f /opt/talend/remote-engine/etc/preauthorized.key.cfg ]; then
+    cp -a /opt/talend/remote-engine/etc.default/. /opt/talend/remote-engine/etc/
+fi
+
+if [ ! -f /opt/talend/runtime-engine/etc/system.properties ]; then
+    cp -a /opt/talend/runtime-engine/etc.default/. /opt/talend/runtime-engine/etc/
+fi
+
 # Assume successful pairing if config already contains the specified preauthorized key
 if ! grep -q "${TALEND_RE_KEY}" /opt/talend/remote-engine/etc/preauthorized.key.cfg; then
     # File doesn't contain preauthorized key
@@ -13,5 +22,8 @@ if ! grep -q "${TALEND_RE_KEY}" /opt/talend/remote-engine/etc/preauthorized.key.
     sed -i "s|remote\.engine\.name.*|remote.engine.name = ${TALEND_RE_NAME}|" /opt/talend/remote-engine/etc/preauthorized.key.cfg
     sed -i "s|remote\.engine\.description.*|remote.engine.description = ${TALEND_RE_DESC}|" /opt/talend/remote-engine/etc/preauthorized.key.cfg
 fi
+
+# Start runtime engine in the background
+/opt/talend/runtime-engine/bin/trun server &
 
 exec "$@"
